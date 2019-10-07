@@ -33,17 +33,3 @@
         domains-checks (doall (vec (map #(conj % (wordpress? (get % 1))) domains)))]
     ;; Save domains to CSV
     (save-csv-domains file-csv domains-checks)))
-
-;; (defn -main
-;;   [& args]
-;;   ;; Read CSV with all domains
-;;   (with-open [reader (io/reader (clojure.java.io/resource "top-1m-test.csv"))]
-;;     (doall
-;;       (let [domains                (csv/read-csv reader)
-;;             ;; Check is WordPress
-;;             domains-with-wordpress (vec (map #(conj % (wordpress? (get % 1))) domains))]
-
-;;         ;; Save CSV
-;;         (with-open [writer (io/writer (clojure.java.io/resource "top-1m-test.csv"))]
-;;           (csv/write-csv writer (doall domains-with-wordpress)))
-;;         ))))
