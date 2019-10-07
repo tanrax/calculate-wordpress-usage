@@ -5,23 +5,45 @@
    [clojure.java.io :as io]
    ) (:gen-class))
 
+(defn read-csv-domains
+  "Read CSV file with all domains"
+  [url]
+  (with-open [reader (io/reader (io/resource url))]
+    (doall (csv/read-csv reader))))
+
+(defn save-csv-domains
+  "Save the list with the domains in a CSV file"
+  [url new-domains]
+  (with-open [writer (io/writer url)]
+    (csv/write-csv writer new-domains)))
+
 (defn wordpress?
-  "Check site used WordPress with meta generator"
+  "Check if a web page is generated with WordPress"
   [url]
   (let [response (client/get (str "http://" url "/") {:ignore-unknown-host? true, :connection-timeout 5000, :throw-exceptions false})]
     (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:body response))])))
 
-
 (defn -main
   [& args]
-  ;; Read CSV with all domains
-  (with-open [reader (io/reader (clojure.java.io/resource "top-1m-test.csv"))]
-    (doall
-      (let [domains                (csv/read-csv reader)
-            ;; Check is WordPress
-            domains-with-wordpress (doall (map #(conj % (wordpress? (get % 1))) domains))]
-        ;;domains-with-wordpress (map #(conj % (wordpress? (get % 1))) domains)]
-      ;; Save CSV
-      (with-open [writer (io/writer (clojure.java.io/resource "top-1m-test.csv"))]
-        (csv/write-csv writer (vec domains-with-wordpress)))
-      ))))
+  (let [;; Name of the file containing the CSV with the domains
+        file-csv       "top-1m-test.csv"
+        ;; List with domains
+        domains        (read-csv-domains file-csv)
+        ;; List with domains with a boolean indicating if it is generate or not in WordPress
+        domains-checks (doall (vec (map #(conj % (wordpress? (get % 1))) domains)))]
+    ;; Save domains to CSV
+    (save-csv-domains file-csv domains-checks)))
+
+;; (defn -main
+;;   [& args]
+;;   ;; Read CSV with all domains
+;;   (with-open [reader (io/reader (clojure.java.io/resource "top-1m-test.csv"))]
+;;     (doall
+;;       (let [domains                (csv/read-csv reader)
+;;             ;; Check is WordPress
+;;             domains-with-wordpress (vec (map #(conj % (wordpress? (get % 1))) domains))]
+
+;;         ;; Save CSV
+;;         (with-open [writer (io/writer (clojure.java.io/resource "top-1m-test.csv"))]
+;;           (csv/write-csv writer (doall domains-with-wordpress)))
+;;         ))))
