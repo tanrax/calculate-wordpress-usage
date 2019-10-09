@@ -3,6 +3,7 @@
    [clj-http.client :as client]
    [clojure.data.csv :as csv]
    [clojure.java.io :as io]
+   [clojure.java.shell :refer [sh]]
    ) (:gen-class))
 
 (defn read-csv-domains
@@ -31,12 +32,12 @@
         domains-csv       (vec (read-csv-domains file-csv))
         ;; Filters leaving those that have not been checked
         domains-unchecked (filter #(= (get % 2) "nil") domains-csv)]
-    (def mod-domains-csv domains-csv)
     ;; List with domains with a boolean indicating if it is generate or not in WordPress
-    (doseq [domain-data domains-unchecked] (let [domain          (get domain-data 1)
+    (doseq [domain-data domains-unchecked] (let [line            (get domain-data 0)
+                                                 domain          (get domain-data 1)
                                                  ;; Check if domain it is generate or not in WordPress
                                                  check-wordpress (wordpress? domain)]
                                              ;; Edit domains-csv with check WordPress 
-                                             (def mod-domains-csv (map #(-> (if (= domain (get % 1)) (assoc % 2 (str check-wordpress)) %)) mod-domains-csv))
-                                             ;; Save domains to CSV
-                                             (save-csv-domains file-csv mod-domains-csv)))))
+                                             (prn (str line " " domain " " check-wordpress))
+                                             (prn (sh "sed" "-i" "1s/b/o/g" (str "resources/" file-csv)))))))
+;; (prn (sh "sed" "-i" (str "'" line "s/.*/" line "," domain "," check-wordpress "/g'") (str "resources/" file-csv)))))))
