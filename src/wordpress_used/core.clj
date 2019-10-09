@@ -14,7 +14,7 @@
 (defn save-csv-domains
   "Save the list with the domains in a CSV file"
   [url new-domains]
-  (with-open [writer (io/writer url)]
+  (with-open [writer (io/writer (io/resource url))]
     (csv/write-csv writer new-domains)))
 
 (defn wordpress?
