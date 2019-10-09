@@ -1,4 +1,4 @@
-1,google.com
-2,youtube.com
-4,tmall.com
-5,idecrea.es
+1,google.com,true
+2,youtube.com,false
+4,tmall.com,nil
+5,idecrea.es,nil

@@ -26,10 +26,17 @@
 (defn -main
   [& args]
   (let [;; Name of the file containing the CSV with the domains
-        file-csv       "top-1m-test.csv"
-        ;; List with domains
-        domains        (read-csv-domains file-csv)
-        ;; List with domains with a boolean indicating if it is generate or not in WordPress
-        domains-checks (doall (vec (map #(conj % (wordpress? (get % 1))) domains)))]
-    ;; Save domains to CSV
-    (save-csv-domains file-csv domains-checks)))
+        file-csv          "top-1m-test.csv"
+        ;; Get domains from CSV
+        domains-csv       (vec (read-csv-domains file-csv))
+        ;; Filters leaving those that have not been checked
+        domains-unchecked (filter #(= (get % 2) "nil") domains-csv)]
+    (def mod-domains-csv domains-csv)
+    ;; List with domains with a boolean indicating if it is generate or not in WordPress
+    (doseq [domain-data domains-unchecked] (let [domain          (get domain-data 1)
+                                                 ;; Check if domain it is generate or not in WordPress
+                                                 check-wordpress (wordpress? domain)]
+                                             ;; Edit domains-csv with check WordPress 
+                                             (def mod-domains-csv (map #(-> (if (= domain (get % 1)) (assoc % 2 (str check-wordpress)) %)) mod-domains-csv))
+                                             ;; Save domains to CSV
+                                             (save-csv-domains file-csv mod-domains-csv)))))
