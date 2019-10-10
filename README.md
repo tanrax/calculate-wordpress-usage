@@ -4,9 +4,8 @@ clojure wget make
 
 ## Prepare
 
-make
-
+make prepare
 
 ## Run
 
-lein run
+make run
