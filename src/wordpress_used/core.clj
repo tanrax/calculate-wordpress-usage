@@ -15,8 +15,12 @@
 (defn wordpress?
   "Check if a web page is generated with WordPress"
   [url]
-  (let [response (client/get (str "http://" url "/") {:ignore-unknown-host? true, :connection-timeout 5000, :throw-exceptions false})]
-    (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:body response))])))
+  (try
+    (let [response (client/get (str "http://" url "/") {:ignore-unknown-host? true, :connection-timeout 5000, :throw-exceptions false})]
+      (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:body response))]))
+    (catch Exception e
+      "timeout"
+      )))
 
 (defn -main
   [& args]
