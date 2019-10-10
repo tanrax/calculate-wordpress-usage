@@ -1,6 +1,6 @@
 ## Install
 
-clojure wget
+clojure wget make
 
 ## Prepare
 
