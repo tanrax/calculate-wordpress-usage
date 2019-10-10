@@ -3,7 +3,7 @@
    [clj-http.client :as client]
    [clojure.data.csv :as csv]
    [clojure.java.io :as io]
-   [clojure.java.shell :refer [sh]]
+   [clojure.java.shell :as shell]
    ) (:gen-class))
 
 (defn read-csv-domains
@@ -11,12 +11,6 @@
   [url]
   (with-open [reader (io/reader (io/resource url))]
     (doall (csv/read-csv reader))))
-
-(defn save-csv-domains
-  "Save the list with the domains in a CSV file"
-  [url new-domains]
-  (with-open [writer (io/writer (io/resource url))]
-    (csv/write-csv writer new-domains)))
 
 (defn wordpress?
   "Check if a web page is generated with WordPress"
@@ -31,13 +25,13 @@
         ;; Get domains from CSV
         domains-csv       (vec (read-csv-domains file-csv))
         ;; Filters leaving those that have not been checked
-        domains-unchecked (filter #(= (get % 2) "nil") domains-csv)]
+        domains-unchecked (vec (filter #(= (get % 2) "nil") domains-csv))]
     ;; List with domains with a boolean indicating if it is generate or not in WordPress
     (doseq [domain-data domains-unchecked] (let [line            (get domain-data 0)
-                                                 domain          (get domain-data 1)
+                                                 url             (get domain-data 1)
                                                  ;; Check if domain it is generate or not in WordPress
-                                                 check-wordpress (wordpress? domain)]
+                                                 check-wordpress (wordpress? url)]
+                                             ;; Show info
+                                             (prn (str line " " url " " check-wordpress))
                                              ;; Edit domains-csv with check WordPress 
-                                             (prn (str line " " domain " " check-wordpress))
-                                             (prn (sh "sed" "-i" "1s/b/o/g" (str "resources/" file-csv)))))))
-;; (prn (sh "sed" "-i" (str "'" line "s/.*/" line "," domain "," check-wordpress "/g'") (str "resources/" file-csv)))))))
+                                             (shell/sh "sed" "-i" (str line "s/nil/" check-wordpress "/g") (str "resources/" file-csv))))))
