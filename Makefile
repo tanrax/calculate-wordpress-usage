@@ -10,4 +10,3 @@ prepare: ## Download and format csv with domains
 		rm top-1m.csv.zip
 		cat top-1m.csv | sed -n 's/$$/,nil/p' | >> top-1m.csv
 		mv top-1m.csv resources
-		rm top-1m.csv
