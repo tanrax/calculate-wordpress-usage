@@ -11,3 +11,6 @@ prepare: ## Download and format csv with domains
 		cat top-1m.csv | sed -n 's/$$/,nil/p' >> top-1m-temp.csv
 		mv top-1m-temp.csv resources/top-1m.csv
 		rm top-1m.csv
+
+run: ## Run checks 
+		lein run
