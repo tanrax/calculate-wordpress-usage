@@ -8,5 +8,6 @@ prepare: ## Download and format csv with domains
 		wget http://s3.amazonaws.com/alexa-static/top-1m.csv.zip
 		unzip top-1m.csv.zip
 		rm top-1m.csv.zip
-		cat top-1m.csv | sed -n 's/$$/,nil/p' | >> top-1m.csv
-		mv top-1m.csv resources
+		cat top-1m.csv | sed -n 's/$$/,nil/p' >> top-1m-temp.csv
+		mv top-1m-temp.csv resources/top-1m.csv
+		rm top-1m.csv
