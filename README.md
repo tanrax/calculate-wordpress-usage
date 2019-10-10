@@ -1,3 +1,7 @@
+## Install
+
+clojure wget
+
 ## Prepare
 
 make
