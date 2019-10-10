@@ -15,3 +15,5 @@ make prepare
 ``` sh
 make run
 ```
+
+OutOfMemoryError: Java heap space
