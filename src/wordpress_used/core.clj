@@ -21,7 +21,7 @@
 (defn -main
   [& args]
   (let [;; Name of the file containing the CSV with the domains
-        file-csv          "top-1m-test.csv"
+        file-csv          "top-1m.csv"
         ;; Get domains from CSV
         domains-csv       (vec (read-csv-domains file-csv))
         ;; Filters leaving those that have not been checked
