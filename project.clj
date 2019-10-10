@@ -6,5 +6,6 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [clj-http "3.10.0"]
                  [org.clojure/data.csv "0.1.4"]]
+  :jvm-opts ["-Xmx1G"]
   :main ^:skip-aot wordpress-used.core
   :repl-options {:init-ns wordpress-used.core})
