@@ -6,6 +6,8 @@
    [clojure.java.shell :as shell]
    ) (:gen-class))
 
+(def h {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"})
+
 (defn read-csv-domains
   "Read CSV file with all domains"
   [url]
@@ -16,7 +18,7 @@
   "Check if a web page is generated with WordPress"
   [url]
   (try
-    (let [response (client/get (str "http://" url "/") {:ignore-unknown-host? true, :connection-timeout 5000, :throw-exceptions false})]
+    (let [response (client/get (str "http://" url "/") {:headers h :ignore-unknown-host? true, :connection-timeout 5000, :throw-exceptions false})]
       (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:body response))]))
     (catch Exception e
       "timeout"
