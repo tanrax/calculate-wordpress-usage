@@ -6,7 +6,18 @@
    [clojure.java.shell :as shell]
    ) (:gen-class))
 
-(def h {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"})
+(def h {
+        "User-Agent"                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
+        "Accept"                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        "Accept-Language"           "es,en-US;q=0.7,en;q=0.3"
+        "Accept-Encoding"           "gzip, deflate, br"
+        "DNT"                       "1"
+        "Connection"                "keep-alive"
+        "Upgrade-Insecure-Requests" "1"
+        "Pragma"                    "no-cache"
+        "Cache-Control"             "no-cache"
+        "TE"                        "Trailers"
+        })
 
 (defn read-csv-domains
   "Read CSV file with all domains"
