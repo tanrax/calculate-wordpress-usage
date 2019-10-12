@@ -6,18 +6,21 @@
    [clojure.java.shell :as shell]
    ) (:gen-class))
 
-(def h {
-        "User-Agent"                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
-        "Accept"                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-        "Accept-Language"           "es,en-US;q=0.7,en;q=0.3"
-        "Accept-Encoding"           "gzip, deflate, br"
-        "DNT"                       "1"
-        "Connection"                "keep-alive"
-        "Upgrade-Insecure-Requests" "1"
-        "Pragma"                    "no-cache"
-        "Cache-Control"             "no-cache"
-        "TE"                        "Trailers"
-        })
+(def headers {"User-Agent"                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
+              "Accept"                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+              "Accept-Language"           "es,en-US;q=0.7,en;q=0.3"
+              "Accept-Encoding"           "gzip, deflate, br"
+              "DNT"                       "1"
+              "Connection"                "keep-alive"
+              "Upgrade-Insecure-Requests" "1"
+              "Pragma"                    "no-cache"
+              "Cache-Control"             "no-cache"
+              "TE"                        "Trailers"})
+(def http-config
+  {:headers              headers
+   :ignore-unknown-host? true
+   :connection-timeout   5000
+   :throw-exceptions     false})
 
 (defn read-csv-domains
   "Read CSV file with all domains"
@@ -29,11 +32,10 @@
   "Check if a web page is generated with WordPress"
   [url]
   (try
-    (let [response (client/get (str "http://" url "/") {:headers h :ignore-unknown-host? true, :connection-timeout 5000, :throw-exceptions false})]
+    (let [response (client/get (str "http://" url "/") http-config)]
       (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:body response))]))
     (catch Exception e
-      "timeout"
-      )))
+      "timeout")))
 
 (defn -main
   [& args]
@@ -44,11 +46,11 @@
         ;; Filters leaving those that have not been checked
         domains-unchecked (vec (filter #(= (get % 2) "nil") domains-csv))]
     ;; List with domains with a boolean indicating if it is generate or not in WordPress
-    (doseq [domain-data domains-unchecked] (let [line            (get domain-data 0)
-                                                 url             (get domain-data 1)
-                                                 ;; Check if domain it is generate or not in WordPress
-                                                 check-wordpress (wordpress? url)]
+    (prn "Start")
+    (doseq [domain-data domains-unchecked] (let [line (get domain-data 0)
+                                                 url  (get domain-data 1)]
                                              ;; Show info
-                                             (prn (str line " " url " " check-wordpress))
-                                             ;; Edit domains-csv with check WordPress 
-                                             (shell/sh "sed" "-i" (str line "s/nil/" check-wordpress "/g") (str "resources/" file-csv))))))
+                                             (prn (str line " " url))
+                                             ;; Edit domains-csv with check WordPress
+                                             (shell/sh "sed" "-i" (str line "s/nil/" (wordpress? url) "/g") (str "resources/" file-csv))))
+    (prn "Complete")))
