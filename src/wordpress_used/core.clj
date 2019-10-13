@@ -8,7 +8,7 @@
 (defn request
   "Make a request by means of curl"
   [url]
-  (shell/sh "curl" "-L" "-H" "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0" "-H" "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" "-H" "Accept-Language: es,en-US;q=0.7,en;q=0.3" "-H" "DNT: 1" "-H" "Connection: keep-alive" "-H" "Upgrade-Insecure-Requests: 1" "-H" "Pragma: no-cache" "-H" "Cache-Control: no-cache" url))
+  (shell/sh "curl" "-L" "--max-time" "5" "-H" "User-Agent: Firefox" url))
 
 (defn read-csv-domains
   "Read CSV file with all domains"
