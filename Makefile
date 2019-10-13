@@ -14,3 +14,6 @@ prepare: ## Download and format csv with domains
 
 run: ## Run checks 
 		lein run
+
+calculate: ## Calculate the percentage
+		(awk 'END {print NR}' resources/top-1m.csv) / (cat resources/top-1m.csv | grep ',true' | wc -l)
