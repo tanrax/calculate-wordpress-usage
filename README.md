@@ -1,3 +1,7 @@
+## Requirements
+
+To run it you'll need either 2Gb of RAM or a swap file of the same size.
+
 ## Install
 
 ``` sh
@@ -15,5 +19,3 @@ make prepare
 ``` sh
 make run
 ```
-
-OutOfMemoryError: Java heap space
