@@ -1,26 +1,15 @@
 (ns wordpress-used.core
   (:require
-   [clj-http.client :as client]
    [clojure.data.csv :as csv]
    [clojure.java.io :as io]
    [clojure.java.shell :as shell]
    ) (:gen-class))
 
-(def headers {"User-Agent"                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
-              "Accept"                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-              "Accept-Language"           "es,en-US;q=0.7,en;q=0.3"
-              "Accept-Encoding"           "gzip, deflate, br"
-              "DNT"                       "1"
-              "Connection"                "keep-alive"
-              "Upgrade-Insecure-Requests" "1"
-              "Pragma"                    "no-cache"
-              "Cache-Control"             "no-cache"
-              "TE"                        "Trailers"})
-(def http-config
-  {:headers              headers
-   :ignore-unknown-host? true
-   :connection-timeout   5000
-   :throw-exceptions     false})
+(defn request
+  "Make a request by means of curl"
+  [url]
+  (shell/sh "curl" "-L" "-m" "5" "-H" "User-Agent: Firefox" url))
+
 
 (defn read-csv-domains
   "Read CSV file with all domains"
@@ -31,11 +20,8 @@
 (defn wordpress?
   "Check if a web page is generated with WordPress"
   [url]
-  (try
-    (let [response (client/get (str "http://" url "/") http-config)]
-      (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:body response))]))
-    (catch Exception e
-      "timeout")))
+  (let [response (request url)]
+    (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:out response))])))
 
 (defn -main
   [& args]
