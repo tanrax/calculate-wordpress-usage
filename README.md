@@ -23,7 +23,7 @@ make prepare
 ## Run
 
 ``` sh
-make run
+lein run
 ```
 
 When all the CSV sites are analyzed, you can see the final figure by running the following script
