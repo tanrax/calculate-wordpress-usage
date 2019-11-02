@@ -26,9 +26,15 @@ make prepare
 lein run
 ```
 
-When all the CSV sites are analyzed, you can see the final figure by running the following script
+## Alternative run (Python 3.6+)
+
+``` sh
+python3 wordpress_used.py
+```
 
 ## Calculate percentage
+
+When all the CSV sites are analyzed, you can see the final figure by running the following script
 
 ``` sh
 bash calculate-percentage.sh
