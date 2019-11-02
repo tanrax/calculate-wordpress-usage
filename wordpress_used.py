@@ -29,6 +29,7 @@ HTML_REGEX = rb"meta.*generator.*WordPress"
 
 async def wordpress_used(args: Any, rows: List[List[str]]) -> None:
     parallel_requests: int = args.parallel_requests
+    timeout_sec: int = args.timeout
 
     next_row = 0
 
@@ -94,7 +95,7 @@ async def wordpress_used(args: Any, rows: List[List[str]]) -> None:
                 print(f"\rException {e!r} while trying domain {domain}")
 
     try:
-        timeout = aiohttp.ClientTimeout(total=5)
+        timeout = aiohttp.ClientTimeout(total=timeout_sec)
         async with aiohttp.ClientSession(headers=HEADERS, timeout=timeout) as client:
             coros = [requester() for _ in range(parallel_requests)]
             await asyncio.gather(write_out(), *coros)
@@ -104,6 +105,7 @@ async def wordpress_used(args: Any, rows: List[List[str]]) -> None:
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-j", "--parallel-requests", type=int, default=20)
+parser.add_argument("-t", "--timeout", type=int, default=10)
 
 
 def main() -> None:
