@@ -43,3 +43,7 @@ bash calculate-percentage.sh
 ## Article with conclusions (in Spanish)
 
 https://programadorwebvalencia.com/analizando-un-millon-de-paginas-para-saber-cuanto-se-usa-wordpress-2019/
+
+## Hacker News (comments)
+
+https://news.ycombinator.com/item?id=21428149
