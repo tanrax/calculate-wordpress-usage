@@ -5,10 +5,10 @@
    [clojure.java.shell :as shell]
    ) (:gen-class))
 
-(defn request
-  "Make a request by means of curl"
+(defn wordpress?
+  "Check if a web page is generated with WordPress"
   [url]
-  (shell/sh "curl" "-L" "-m" "5" "-H" "User-Agent: Firefox" url))
+  (= (clojure.string/trim-newline (:out (shell/sh "bash" "./is-wordpress/is-wordpress" url))) "true"))
 
 
 (defn read-csv-domains
@@ -17,11 +17,6 @@
   (with-open [reader (io/reader (io/resource url))]
     (doall (csv/read-csv reader))))
 
-(defn wordpress?
-  "Check if a web page is generated with WordPress"
-  [url]
-  (let [response (request url)]
-    (every? identity [(re-find (re-pattern "meta.*generator.*WordPress") (:out response))])))
 
 (defn -main
   [& args]
