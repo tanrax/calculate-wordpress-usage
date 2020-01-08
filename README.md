@@ -40,6 +40,10 @@ bash calculate-percentage.sh
 
 19%
 
+### 2020
+
+29%
+
 ## Article with conclusions (in Spanish)
 
 https://programadorwebvalencia.com/analizando-un-millon-de-paginas-para-saber-cuanto-se-usa-wordpress-2019/
